@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import hr.vbestak.authclient.entity.common.AuditableEntity;
 import hr.vbestak.authclient.entity.common.Identifiable;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
