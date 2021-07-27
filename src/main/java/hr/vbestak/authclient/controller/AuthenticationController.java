@@ -25,15 +25,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginCommand loginCommand){
+    public ResponseEntity<String> login(@RequestBody LoginCommand loginCommand){
         String token = authenticationService.login(loginCommand);
 
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/verifyToken")
-    @ResponseStatus(HttpStatus.OK)
-    public void verify(@RequestHeader(name = "Authorization") String token){
-        authenticationService.verifyToken(token);
-    }
 }
