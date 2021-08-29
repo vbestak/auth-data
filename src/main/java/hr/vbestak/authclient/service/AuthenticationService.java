@@ -1,9 +1,13 @@
 package hr.vbestak.authclient.service;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import hr.vbestak.authclient.dto.RegistrationForm;
+import hr.vbestak.authclient.dto.TokenResponse;
 import hr.vbestak.authclient.entity.User;
-import hr.vbestak.authclient.model.LoginCommand;
+import hr.vbestak.authclient.dto.LoginCommand;
 import hr.vbestak.authclient.util.JwtUtil;
+import hr.vbestak.authclient.model.common.TokenType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,11 +25,11 @@ public class AuthenticationService {
         this.userService = userService;
     }
 
-    public void register(User user){
-        userService.create(user);
+    public void register(RegistrationForm user){
+        userService.create(mapRegistrationForm(user));
     }
 
-    public String login(LoginCommand loginCommand){
+    public TokenResponse login(LoginCommand loginCommand){
         User user = userService.findByEmail(loginCommand.getEmail());
         Boolean passwordIsCorrect = bCryptPasswordEncoder.matches(loginCommand.getPassword(), user.getPassword());
 
@@ -40,7 +44,25 @@ public class AuthenticationService {
         throw new IllegalArgumentException("Wrong user credentials");
     }
 
-    public void verifyToken(String bearerToken){
-        jwtUtil.decode(bearerToken);
+    public TokenResponse refreshToken(String refreshToken) {
+        try {
+            DecodedJWT decodedJWT = jwtUtil.decode(refreshToken, TokenType.REFRESH_TOKEN);
+            User user = userService.findByEmail(decodedJWT.getSubject());
+            return jwtUtil.encode(user);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Server error. Object to json convert error.");
+        }
+    }
+
+    public void verifyToken(String bearerToken, TokenType tokenType){
+        jwtUtil.decode(bearerToken, tokenType);
+    }
+
+
+    public User mapRegistrationForm(RegistrationForm registrationForm) {
+        User user = new User();
+        user.setEmail(registrationForm.getEmail());
+        user.setPassword(registrationForm.getPassword());
+        return user;
     }
 }

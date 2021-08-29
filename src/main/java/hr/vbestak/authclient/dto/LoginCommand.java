@@ -1,4 +1,4 @@
-package hr.vbestak.authclient.model;
+package hr.vbestak.authclient.dto;
 
 import lombok.Getter;
 

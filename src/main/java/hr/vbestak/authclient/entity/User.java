@@ -1,9 +1,12 @@
 package hr.vbestak.authclient.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import hr.vbestak.authclient.entity.common.AuditableEntity;
 import hr.vbestak.authclient.entity.common.Identifiable;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,14 +27,18 @@ public class User extends AuditableEntity implements UserDetails, Identifiable<L
     private String lastName;
 
     private String username;
+
+    @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private Boolean isVerified;
     private Boolean isEnabled;
     private Boolean isTerminated;
 
+    @JsonIgnoreProperties({"id"})
     @ManyToMany(mappedBy = "user")
     private List<Role> roles;
 

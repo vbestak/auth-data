@@ -1,6 +1,8 @@
 package hr.vbestak.authclient.filter;
 
+import hr.vbestak.authclient.util.AuthUtil;
 import hr.vbestak.authclient.util.JwtUtil;
+import hr.vbestak.authclient.model.common.TokenType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +20,6 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends GenericFilterBean {
     private final String AUTHORIZATION_HEADER = "Authorization";
-    private final String TOKEN_TYPE = "Bearer ";
 
     private final JwtUtil jwtUtil;
 
@@ -32,7 +33,7 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
 
-        if (StringUtils.hasText(jwt) && jwtUtil.validate(jwt)) {
+        if (StringUtils.hasText(jwt) && jwtUtil.validate(jwt, TokenType.ACCESS_TOKEN)) {
             Authentication authentication = jwtUtil.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -43,8 +44,9 @@ public class JwtFilter extends GenericFilterBean {
     private String resolveToken(HttpServletRequest request) {
         String token = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(token)) {
-            return token.replace(TOKEN_TYPE, "");
+            return AuthUtil.getToken(token);
         }
+
         return null;
     }
 }

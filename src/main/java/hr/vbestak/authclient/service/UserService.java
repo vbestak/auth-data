@@ -1,6 +1,7 @@
 package hr.vbestak.authclient.service;
 
 import hr.vbestak.authclient.entity.User;
+import hr.vbestak.authclient.dto.UserUpdateCommand;
 import hr.vbestak.authclient.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,8 +31,14 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void update(User user){
+    public void update(UserUpdateCommand userUpdateCommand){
+        User user = mapUserCommand(userUpdateCommand);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        userRepository.deleteById(id);
     }
 
     public User findByEmail(String email){
@@ -41,5 +48,10 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.findByEmail(s).orElseThrow(() -> new UsernameNotFoundException("User not found for: " + s));
+    }
+
+    public User mapUserCommand(UserUpdateCommand userUpdateCommand){
+        User user = new User();
+        return user;
     }
 }

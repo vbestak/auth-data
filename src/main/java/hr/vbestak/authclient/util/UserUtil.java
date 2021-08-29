@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public final class UserUtil {
 
-    public static Optional<String> getCurrentUserUsername() {
+    public static Optional<String> getCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }

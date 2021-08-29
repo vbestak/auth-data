@@ -1,4 +1,4 @@
-package hr.vbestak.authclient.model;
+package hr.vbestak.authclient.dto;
 
 import hr.vbestak.authclient.entity.Role;
 import hr.vbestak.authclient.entity.User;
