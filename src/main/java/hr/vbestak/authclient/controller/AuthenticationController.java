@@ -6,6 +6,7 @@ import hr.vbestak.authclient.dto.TokenResponse;
 import hr.vbestak.authclient.model.error.ApiValidationError;
 import hr.vbestak.authclient.service.AuthenticationService;
 import hr.vbestak.authclient.util.AuthUtil;
+import hr.vbestak.authclient.util.ThreadUtil;
 import hr.vbestak.authclient.util.ValidatorUtil;
 import hr.vbestak.authclient.validator.RegistrationFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginCommand loginCommand){
         TokenResponse tokenResponse = authenticationService.login(loginCommand);
-
+        //random pausing helps against brute force attack and time attacks
+        ThreadUtil.pauseRandom(2000);
         return ResponseEntity.ok(tokenResponse);
     }
 
