@@ -61,6 +61,9 @@ public class AuthenticationService {
 
     public User mapRegistrationForm(RegistrationForm registrationForm) {
         User user = new User();
+        user.setFirstName(registrationForm.getFirstName());
+        user.setLastName(registrationForm.getLastName());
+        user.setUsername(registrationForm.getUserName());
         user.setEmail(registrationForm.getEmail());
         user.setPassword(registrationForm.getPassword());
         return user;
