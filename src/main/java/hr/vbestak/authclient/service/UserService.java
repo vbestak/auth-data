@@ -31,9 +31,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void update(UserUpdateCommand userUpdateCommand){
-        User user = mapUserCommand(userUpdateCommand);
-        userRepository.save(user);
+    public void update(Long id, UserUpdateCommand userUpdateCommand){
+        User user = userRepository.findById(id).get();
+        User userUpdate = mapUserUpdateCommand(user, userUpdateCommand);
+        userRepository.save(userUpdate);
     }
 
     @Transactional
@@ -50,8 +51,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(s).orElseThrow(() -> new UsernameNotFoundException("User not found for: " + s));
     }
 
-    public User mapUserCommand(UserUpdateCommand userUpdateCommand){
-        User user = new User();
+    public User mapUserUpdateCommand(User user, UserUpdateCommand userUpdateCommand){
+        user.setUsername(userUpdateCommand.getUserName());
+        user.setFirstName(userUpdateCommand.getFirstName());
+        user.setLastName(userUpdateCommand.getLastName());
+        user.setEmail(userUpdateCommand.getEmail());
         return user;
     }
 }

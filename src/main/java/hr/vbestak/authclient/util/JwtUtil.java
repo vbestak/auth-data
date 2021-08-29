@@ -11,6 +11,7 @@ import hr.vbestak.authclient.model.common.TokenType;
 import hr.vbestak.authclient.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +36,13 @@ public final class JwtUtil {
     private String REFRESH_TOKEN_SECRET;
     @Value("${jwt.refresh-token.expiration-time}")
     private long RT_EXPIRATION_TIME;
+
+    private UserService userService;
+
+    @Autowired
+    public JwtUtil(@Lazy UserService userService) {
+        this.userService = userService;
+    }
 
     private String generateAccessToken(User user) {
         List<String> authorities = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
@@ -86,6 +94,7 @@ public final class JwtUtil {
 
     public Authentication getAuthentication(String token) {
         DecodedJWT decodedJWT = decode(token, TokenType.ACCESS_TOKEN);
+        User user = userService.findByEmail(decodedJWT.getSubject());
 
         Collection<? extends GrantedAuthority> authorities = decodedJWT.getClaim(AUTHORITY_KEY)
                 .asList(String.class)
@@ -93,7 +102,7 @@ public final class JwtUtil {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(decodedJWT.getSubject(), token, authorities);
+        return new UsernamePasswordAuthenticationToken(user, token, authorities);
     }
 
     public DecodedJWT decode(String token, TokenType tokenType){

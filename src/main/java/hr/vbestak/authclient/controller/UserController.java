@@ -25,16 +25,15 @@ public class UserController {
 
     @GetMapping("/whoAmI")
     public ResponseEntity<UserPrincipal> whoAmI(){
-        Optional<String> username = UserUtil.getCurrentUser();
-        User user = (User) userService.loadUserByUsername(username.get());
+        Optional<User> user = UserUtil.getCurrentUser();
 
-        return ResponseEntity.ok().body(new UserPrincipal(user));
+        return ResponseEntity.ok().body(new UserPrincipal(user.get()));
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public void updateUser(@PathVariable String id, @RequestBody UserUpdateCommand user){
-        userService.update(user);
+    public void updateUser(@PathVariable Long id, @RequestBody UserUpdateCommand user){
+        userService.update(id, user);
     }
 
     @Secured({"ROLE_ADMIN"})

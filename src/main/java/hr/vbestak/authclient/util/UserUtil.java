@@ -1,5 +1,6 @@
 package hr.vbestak.authclient.util;
 
+import hr.vbestak.authclient.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -11,19 +12,17 @@ import java.util.stream.Stream;
 
 public final class UserUtil {
 
-    public static Optional<String> getCurrentUser() {
+    public static Optional<User> getCurrentUser() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
 
-    private static String extractPrincipal(Authentication authentication) {
+    private static User extractPrincipal(Authentication authentication) {
         if (authentication == null) {
             return null;
-        } else if (authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-            return springSecurityUser.getUsername();
-        } else if (authentication.getPrincipal() instanceof String) {
-            return (String) authentication.getPrincipal();
+        } else if (authentication.getPrincipal() instanceof User) {
+            User springSecurityUser = (User) authentication.getPrincipal();
+            return springSecurityUser;
         }return null;
     }
 

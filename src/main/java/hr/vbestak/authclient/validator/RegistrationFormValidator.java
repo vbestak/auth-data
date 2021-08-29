@@ -33,7 +33,7 @@ public class RegistrationFormValidator implements Validator {
             errors.rejectValue("email", "Email is empty!");
         } else if(!ValidatorUtil.validEmail(email)) {
             errors.rejectValue("email", "Email is invalid!");
-        } else if (this.validatorUtil.emailInUse(email)) {
+        } else if (validatorUtil.emailInUse(email)) {
             errors.rejectValue("email", "Email already in use!");
         }
 
