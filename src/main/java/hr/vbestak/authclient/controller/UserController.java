@@ -23,13 +23,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/whoAmI")
-    public ResponseEntity<UserPrincipal> whoAmI(){
-        Optional<User> user = UserUtil.getCurrentUser();
-
-        return ResponseEntity.ok().body(new UserPrincipal(user.get()));
-    }
-
     @PutMapping("/{id}")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void updateUser(@PathVariable Long id, @RequestBody UserUpdateCommand user){

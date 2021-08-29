@@ -1,5 +1,6 @@
 package hr.vbestak.authclient.controller.api;
 
+import hr.vbestak.authclient.dto.UserPrincipal;
 import hr.vbestak.authclient.dto.UserUpdateCommand;
 import hr.vbestak.authclient.entity.User;
 import hr.vbestak.authclient.model.error.ApiValidationError;
@@ -28,6 +29,13 @@ public class UserApiController {
     public UserApiController(UserService userService, UserUpdateValidator userUpdateValidator) {
         this.userService = userService;
         this.userUpdateValidator = userUpdateValidator;
+    }
+
+    @GetMapping("/whoAmI")
+    public ResponseEntity<UserPrincipal> whoAmI(){
+        Optional<User> user = UserUtil.getCurrentUser();
+
+        return ResponseEntity.ok().body(new UserPrincipal(user.get()));
     }
 
     @PutMapping("/{id}")
