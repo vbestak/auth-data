@@ -33,9 +33,9 @@ public class UserApiController {
 
     @GetMapping("/whoAmI")
     public ResponseEntity<UserPrincipal> whoAmI(){
-        Optional<User> user = UserUtil.getCurrentUser();
-
-        return ResponseEntity.ok().body(new UserPrincipal(user.get()));
+        User tokenUser = UserUtil.getCurrentUser().get();
+        UserPrincipal userPrincipal = new UserPrincipal(userService.findById(tokenUser.getId()));
+        return ResponseEntity.ok().body(userPrincipal);
     }
 
     @PutMapping("/{id}")

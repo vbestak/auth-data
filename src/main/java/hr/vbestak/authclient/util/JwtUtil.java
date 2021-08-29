@@ -48,7 +48,7 @@ public final class JwtUtil {
         List<String> authorities = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
 
         return JWT.create()
-                .withSubject(user.getEmail())
+                .withSubject(user.getId().toString())
                 .withClaim(AUTHORITY_KEY, authorities)
                 .withExpiresAt(new Date(System.currentTimeMillis() + AT_EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(ACCESS_TOKEN_SECRET));
@@ -56,7 +56,7 @@ public final class JwtUtil {
 
     private String generateRefreshToken(User user) {
         return JWT.create()
-                .withSubject(user.getEmail())
+                .withSubject(user.getId().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + RT_EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(REFRESH_TOKEN_SECRET));
     }
@@ -94,7 +94,7 @@ public final class JwtUtil {
 
     public Authentication getAuthentication(String token) {
         DecodedJWT decodedJWT = decode(token, TokenType.ACCESS_TOKEN);
-        User user = userService.findByEmail(decodedJWT.getSubject());
+        User user = userService.findById(Long.parseLong(decodedJWT.getSubject()));
 
         Collection<? extends GrantedAuthority> authorities = decodedJWT.getClaim(AUTHORITY_KEY)
                 .asList(String.class)

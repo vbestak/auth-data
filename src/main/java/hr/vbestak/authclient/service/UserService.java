@@ -46,6 +46,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email).orElseThrow(()->new IllegalArgumentException("User not found for email: " + email));
     }
 
+    public User findById(Long id){
+        return userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("User not found for id: " + id));
+    }
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userRepository.findByEmail(s).orElseThrow(() -> new UsernameNotFoundException("User not found for: " + s));
