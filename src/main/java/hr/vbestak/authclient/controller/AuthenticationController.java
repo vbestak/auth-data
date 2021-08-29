@@ -47,7 +47,7 @@ public class AuthenticationController {
     public ResponseEntity<TokenResponse> login(@RequestBody LoginCommand loginCommand){
         TokenResponse tokenResponse = authenticationService.login(loginCommand);
         //random pausing helps against brute force attack and time attacks
-        ThreadUtil.pauseRandom(2000);
+        ThreadUtil.pauseRandom(1250);
         return ResponseEntity.ok(tokenResponse);
     }
 
